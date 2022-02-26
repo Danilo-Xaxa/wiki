@@ -1,5 +1,4 @@
-from django.shortcuts import render
-
+from django.shortcuts import redirect, render
 from . import util
 from markdown2 import Markdown
 from random import randint
@@ -11,11 +10,7 @@ def index(request):
     })
 
 
-def entrada(request, title):
-    if title == "random_page":
-        list_entries = util.list_entries()
-        title = list_entries[randint(0, len(list_entries) - 1)]
-
+def entry(request, title):
     content = util.get_entry(title)
 
     if content:
@@ -29,3 +24,11 @@ def entrada(request, title):
         return render(request, "encyclopedia/error.html", {
             "error_msg": f"There is not a page called {title}. Make one..."
         })
+
+
+def random_page(request):
+    list_entries = util.list_entries()
+    title = list_entries[randint(0, len(list_entries) - 1)]
+    return redirect(f"/wiki/{title}")
+
+
