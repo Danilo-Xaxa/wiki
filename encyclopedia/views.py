@@ -66,3 +66,22 @@ def save_page(request):
     content = request.POST.get('content')
     util.save_entry(title, content)
     return redirect(f"/wiki/{title}")
+
+
+def edit(request):
+    title = request.POST.get('title')
+    return render(request, "encyclopedia/edit.html", {
+                "title": title,
+                "content": util.get_entry(title)
+            })
+
+
+
+
+
+
+
+
+# TODO:
+# - Melhorar os estilos
+# - Lidar melhor com os /

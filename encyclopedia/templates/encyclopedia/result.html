@@ -5,5 +5,9 @@
 {% endblock %}
 
 {% block body %}
+    <form action="/wiki/edit" method="POST">
+        {% csrf_token %}
+        <input type="submit" name="{{ title }}" placeholder="Editar">
+    </form>
     {{ content | safe }}
 {% endblock %}
