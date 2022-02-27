@@ -34,13 +34,12 @@ def random_page(request):
 
 def search(request):
     query = request.GET.get("q")
-    entries = util.list_entries()
 
-    if query in [entry.lower() for entry in entries]:
+    if query.lower() in [entry.lower() for entry in util.list_entries()]:
         return redirect(f"/wiki/{query}")
     else:
         matches = []
-        for entry in entries:
+        for entry in util.list_entries():
             if query in entry:
                 matches.append(entry)
         if matches:
@@ -51,3 +50,19 @@ def search(request):
             return render(request, "encyclopedia/error.html", {
                 "error_msg": "There are no matches for your search :("
             })
+
+
+def create_page(request):
+    return render(request, "encyclopedia/create.html")
+
+
+def save_page(request):
+    title = request.POST.get('title')
+    if title.lower() in [entry.lower() for entry in util.list_entries()]:
+        return render(request, "encyclopedia/error.html", {
+                    "error_msg": f"There is a page called {title} already :("
+                })
+
+    content = request.POST.get('content')
+    util.save_entry(title, content)
+    return redirect(f"/wiki/{title}")
