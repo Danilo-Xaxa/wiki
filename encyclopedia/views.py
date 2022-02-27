@@ -27,8 +27,27 @@ def entry(request, title):
 
 
 def random_page(request):
-    list_entries = util.list_entries()
-    title = list_entries[randint(0, len(list_entries) - 1)]
+    entries = util.list_entries()
+    title = entries[randint(0, len(entries) - 1)]
     return redirect(f"/wiki/{title}")
 
 
+def search(request):
+    query = request.GET.get("q")
+    entries = util.list_entries()
+
+    if query in [entry.lower() for entry in entries]:
+        return redirect(f"/wiki/{query}")
+    else:
+        matches = []
+        for entry in entries:
+            if query in entry:
+                matches.append(entry)
+        if matches:
+            return render(request, "encyclopedia/index.html", {
+                "entries": matches
+            })
+        else:
+            return render(request, "encyclopedia/error.html", {
+                "error_msg": "There are no matches for your search :("
+            })
