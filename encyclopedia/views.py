@@ -39,8 +39,8 @@ def search(request):
         return redirect(f"/wiki/{query}")
     else:
         matches = []
-        for entry in util.list_entries():
-            if query in entry:
+        for entry in [entry.lower() for entry in util.list_entries()]:
+            if query.lower() in entry:
                 matches.append(entry)
         if matches:
             return render(request, "encyclopedia/index.html", {
@@ -58,7 +58,12 @@ def create_page(request):
 
 def save_page(request):
     title = request.POST.get('title')
-    if title.lower() in [entry.lower() for entry in util.list_entries()]:
+    content = request.POST.get('content')
+    if content != util.get_entry(title):
+        util.save_entry(title, content)
+        return redirect(f"/wiki/{title}")
+    all_entries = [entry.lower() for entry in util.list_entries()]
+    if title.lower() in all_entries:
         return render(request, "encyclopedia/error.html", {
                     "error_msg": f"There is a page called {title} already :("
                 })
@@ -69,19 +74,14 @@ def save_page(request):
 
 
 def edit(request):
-    title = request.POST.get('title')
+    title = request.GET.get('title')
+    content = util.get_entry(title)
     return render(request, "encyclopedia/edit.html", {
                 "title": title,
-                "content": util.get_entry(title)
+                "content": content
             })
-
-
-
-
-
-
-
 
 # TODO:
 # - Melhorar os estilos
 # - Lidar melhor com os /
+# - Bug de criar um novo título com o mesmo nome de um já existente
