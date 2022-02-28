@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/wiki/edit" method="GET">
+    <form action="{% url 'edit' %}" method="GET">
         <input type="submit" name="title" value="{{ title }}">
     </form>
     {{ content | safe }}

@@ -26,7 +26,7 @@ def entry(request, title):
         })
 
 
-def random_page(request):
+def random(request):
     entries = util.list_entries()
     title = entries[randint(0, len(entries) - 1)]
     return redirect(f"/wiki/{title}")
@@ -52,11 +52,11 @@ def search(request):
             })
 
 
-def create_page(request):
+def create(request):
     return render(request, "encyclopedia/create.html")
 
 
-def save_page(request):
+def save(request):
     title = request.POST.get('title')
     content = request.POST.get('content')
     if content != util.get_entry(title):
@@ -82,6 +82,5 @@ def edit(request):
             })
 
 # TODO:
-# - Melhorar os estilos
-# - Lidar melhor com os /
 # - Bug de criar um novo título com o mesmo nome de um já existente
+# - Bugs de lowercase e tal

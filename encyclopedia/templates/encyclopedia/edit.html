@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/wiki/save_page/" method="POST">
+    <form action="{% url 'save' %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="title" value="{{ title }}" readonly>
+        <input type="text" name="title" value="{{ title }}" readonly style="display: block;">
         <textarea cols="5" rows="5" name="content">{{ content }}</textarea>
         <input type="submit">
     </form>

@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/wiki/save_page/" method="POST">
+    <form action="{% url 'save' %}" method="POST">
         {% csrf_token %}
-        <input type="text" name="title" placeholder="Entry Title" required>
-        <textarea name="content" cols="5" rows="5" placeholder="Your entry" required></textarea>
+        <input type="text" name="title" placeholder="Entry Title" required style="display: block;">
+        <textarea name="content" placeholder="Your entry" required></textarea>
         <input type="submit">
     </form>
 {% endblock %}
