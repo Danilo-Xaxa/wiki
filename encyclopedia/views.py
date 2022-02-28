@@ -54,33 +54,31 @@ def search(request):
 
 
 def create(request):
+    if request.method == "POST":
+        title = request.POST.get('title')
+        for entry in util.list_entries():
+            if title.casefold() == entry.casefold():
+                return render(request, "encyclopedia/error.html", {
+                    "error_msg": f"There is a page called {entry} already :("
+                })
+
+        content = request.POST.get('content')
+        util.save_entry(title, content)
+        return redirect(f"/wiki/{title}")
+
     return render(request, "encyclopedia/create.html")
 
 
-def save(request):
-    title = request.POST.get('title')
-    content = request.POST.get('content')
-    if content != util.get_entry(title):
+def edit(request):
+    if request.method == "POST":	
+        title = request.POST.get('title')
+        content = request.POST.get('content')
         util.save_entry(title, content)
         return redirect(f"/wiki/{title}")
-    for entry in util.list_entries():
-        if title.casefold() == entry.casefold():
-            return render(request, "encyclopedia/error.html", {
-                        "error_msg": f"There is a page called {title} already :("
-                    })
 
-    content = request.POST.get('content')
-    util.save_entry(title, content)
-    return redirect(f"/wiki/{title}")
-
-
-def edit(request):
     title = request.GET.get('title')
     content = util.get_entry(title)
     return render(request, "encyclopedia/edit.html", {
-                "title": title,
-                "content": content
-            })
-
-# TODO:
-# - Bug de criar um novo com o mesmo nome de um já existente
+        "title": title,
+        "content": content
+        })
