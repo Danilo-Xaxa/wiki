@@ -35,12 +35,13 @@ def random(request):
 def search(request):
     query = request.GET.get("q")
 
-    if query.lower() in [entry.lower() for entry in util.list_entries()]:
-        return redirect(f"/wiki/{query}")
+    for entry in util.list_entries():
+        if query.casefold() == entry.casefold():
+            return redirect(f"/wiki/{entry}")
     else:
         matches = []
-        for entry in [entry.lower() for entry in util.list_entries()]:
-            if query.lower() in entry:
+        for entry in util.list_entries():
+            if query.casefold() in entry.casefold():
                 matches.append(entry)
         if matches:
             return render(request, "encyclopedia/index.html", {
@@ -62,11 +63,11 @@ def save(request):
     if content != util.get_entry(title):
         util.save_entry(title, content)
         return redirect(f"/wiki/{title}")
-    all_entries = [entry.lower() for entry in util.list_entries()]
-    if title.lower() in all_entries:
-        return render(request, "encyclopedia/error.html", {
-                    "error_msg": f"There is a page called {title} already :("
-                })
+    for entry in util.list_entries():
+        if title.casefold() == entry.casefold():
+            return render(request, "encyclopedia/error.html", {
+                        "error_msg": f"There is a page called {title} already :("
+                    })
 
     content = request.POST.get('content')
     util.save_entry(title, content)
@@ -82,5 +83,4 @@ def edit(request):
             })
 
 # TODO:
-# - Bug de criar um novo título com o mesmo nome de um já existente
-# - Bugs de lowercase e tal
+# - Bug de criar um novo com o mesmo nome de um já existente
